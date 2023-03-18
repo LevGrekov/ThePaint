@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Drawing;
+using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
@@ -12,28 +15,41 @@ namespace ThePaint
             Sheet.MouseUp += Sheet_MouseUp;
             Sheet.MouseDown += Sheet_MouseDown;
             Sheet.MouseMove += Sheet_MouseMove;
+
         }
+        private bool pressed = false;
 
         private Graphics g;
         private Bitmap bitmap = new Bitmap(10, 10);
 
         private Pen FirstPen = new Pen(Color.Black, 4);
         private Pen SecondPen = new Pen(Color.White, 4);
+        private Pen LastUsedPen = new Pen(Color.Black, 4);
 
         private Color CurrentMainColor = Color.Black;
         private Color CurrentAdditionalColor = Color.White;
+        private int thickness = 4;
 
-        enum ColorOption
+        private enum ColorOption
         {
             Main,
             Addictional
         }
         private ColorOption CurrentColor = ColorOption.Main;
 
+        private enum DrawOption
+        {
+            Pencil,
+            Pen,
+            Line,
+            Rectangle,
+            Circle,
+            Triangle,
+        }
+        private DrawOption drawOption = DrawOption.Pen;
 
-        private int thickness = 4;
 
-
+        // Вспомогательные методы 
         private void ReloadPen()
         {
             FirstPen = new Pen(CurrentMainColor, thickness);
@@ -43,10 +59,7 @@ namespace ThePaint
             SecondPen = new Pen(CurrentAdditionalColor, thickness);
             SecondPen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
             SecondPen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
-
         }
-
-        private bool pressed = false;
         private void SetSize()
         {
             Rectangle rectangle = Screen.PrimaryScreen.Bounds;
@@ -54,6 +67,8 @@ namespace ThePaint
             g = Graphics.FromImage(bitmap);
             ReloadPen();
         }
+
+        //Работа с Точками
         private class ArrayPoints
         {
             private int index = 0;
@@ -79,36 +94,128 @@ namespace ThePaint
             public int Count => index;
             public Point[] Points => points;
 
+            public Point this[int index]
+            {
+
+                get
+                {
+                    if (index < 0 && index > points.Length) throw new IndexOutOfRangeException();
+                    return points[index];
+                }
+                set
+                {
+                    if (index < 0 && index > points.Length) throw new IndexOutOfRangeException();
+                    points[index] = value;
+                }
+            }
         }
         private ArrayPoints arrayPoints = new ArrayPoints(2);
+
+        public Point startPoint
+        {
+            get => arrayPoints[0];
+            set => arrayPoints[0] = value;
+        }
+        public Point endPoint
+        {
+            get => arrayPoints[1];
+            set => arrayPoints[1] = value;
+        }
+
+        //Взаимодействие с Холстом
+
         private void Sheet_MouseDown(object sender, MouseEventArgs e)
         {
             pressed = true;
+
+            //Фиксирование рабочего Карандаша 
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    LastUsedPen = FirstPen;
+                    break;
+                case MouseButtons.Right:
+                    LastUsedPen = SecondPen;
+                    break;
+            }
+
+            startPoint = e.Location;
         }
         private void Sheet_MouseUp(object sender, MouseEventArgs e)
         {
-            pressed = false;
+            endPoint = e.Location;
+            switch (drawOption)
+            {
+                case DrawOption.Line:
+                    g.DrawLine(LastUsedPen, arrayPoints[0], arrayPoints[1]);
+                    break;
+                case DrawOption.Rectangle:
+                    g.DrawRectangle(LastUsedPen, CountRectangle());
+                    break;
+                case DrawOption.Circle:
+                    g.DrawEllipse(LastUsedPen, CountRectangle());
+                    break;
+            }
+
             arrayPoints.ResetPoints();
+            pressed = false;
         }
         private void Sheet_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!pressed) return;
-            arrayPoints.SetPoint(e.X, e.Y);
-            if (arrayPoints.Count >= 2)
+
+            if (!pressed) return;//Проверка на "нажатость".
+            switch (drawOption)
             {
-                switch (e.Button)
-                {
-                    case MouseButtons.Left:
-                        g.DrawLines(FirstPen, arrayPoints.Points);
-                        break;
-                    case MouseButtons.Right:
-                        g.DrawLines(SecondPen, arrayPoints.Points);
-                        break;
-                }
-                Sheet.Image = bitmap;
-                arrayPoints.SetPoint(e.X, e.Y);
+                case DrawOption.Pen:
+                    arrayPoints.SetPoint(e.X, e.Y);
+                    if (arrayPoints.Count >= 2)
+                    {
+                        g.DrawLines(LastUsedPen, arrayPoints.Points);
+                        Sheet.Image = bitmap;
+                        arrayPoints.SetPoint(e.X, e.Y);
+                    }
+                    break;
+                default:
+                    arrayPoints[1] = e.Location;
+                    Sheet.Image = bitmap;
+                    Sheet.Invalidate();
+                    break;
             }
         }
+
+        private void Sheet_Paint(object sender, PaintEventArgs e)
+        {
+            if (!pressed) return;
+            switch (drawOption)
+            {
+                case DrawOption.Rectangle:
+                    e.Graphics.DrawRectangle(LastUsedPen, CountRectangle());
+                    break;
+
+                case DrawOption.Line:
+                    e.Graphics.DrawLine(LastUsedPen, arrayPoints[0], arrayPoints[1]);
+                    break;
+                case DrawOption.Circle:
+                    e.Graphics.DrawEllipse(LastUsedPen, CountRectangle());
+                    break;
+            }
+
+        }
+
+        private Rectangle CountRectangle()
+        {
+            int x1 = Math.Min(startPoint.X, endPoint.X);
+            int y1 = Math.Min(startPoint.Y, endPoint.Y);
+            int x2 = Math.Max(startPoint.X, endPoint.X);
+            int y2 = Math.Max(startPoint.Y, endPoint.Y);
+
+            int width = x2 - x1;
+            int height = y2 - y1;
+
+            return new Rectangle(x1, y1, width, height);
+        }
+
+        //Цвета и Толщина
         private void ColorPick(object sender, MouseEventArgs e)
         {
             Button button = (Button)sender;
@@ -119,18 +226,14 @@ namespace ThePaint
                 case ColorOption.Main:
                     MainColorButton.BackColor = color;
                     CurrentMainColor = color;
-
                     break;
                 case ColorOption.Addictional:
                     AddictionalColorButton.BackColor = color;
                     CurrentAdditionalColor = color;
-
                     break;
             }
             ReloadPen();
         }
-
-
         private void ChooseThickNess(object sender, EventArgs e)
         {
             if (sender == toolStripMenuItem1)
@@ -159,7 +262,6 @@ namespace ThePaint
             }
             else return;
         }
-
         private void ChooseColor(object sender, EventArgs e)
         {
             if (sender == MainColorPanel || sender == MainColorButton || sender == label1)
@@ -176,12 +278,16 @@ namespace ThePaint
             }
         }
 
-        private void panel3_Paint(object sender, PaintEventArgs e)
+        //Выбор метода для Рисования 
+        private void ChooseDrawingMethod(object sender, EventArgs e)
         {
-
+            if (sender.Equals(LineDrawer)) drawOption = DrawOption.Line;
+            if (sender.Equals(PenDrawer)) drawOption = DrawOption.Pen;
+            if (sender.Equals(RectangleDrawer)) drawOption = DrawOption.Rectangle;
+            if (sender.Equals(EllipsDrawer)) drawOption = DrawOption.Circle;
         }
 
-        private void Sheet_Click(object sender, EventArgs e)
+        private void menuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
         }

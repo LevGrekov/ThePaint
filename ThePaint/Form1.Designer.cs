@@ -30,7 +30,24 @@
         {
             Sheet = new PictureBox();
             ControlPanel = new Panel();
+            panel5 = new Panel();
+            label3 = new Label();
+            panel4 = new Panel();
+            panel6 = new Panel();
+            menuStrip2 = new MenuStrip();
+            контурToolStripMenuItem = new ToolStripMenuItem();
+            заливкаToolStripMenuItem = new ToolStripMenuItem();
+            сплошнойЦветToolStripMenuItem = new ToolStripMenuItem();
+            заливкаToolStripMenuItem1 = new ToolStripMenuItem();
+            безЗаливкиToolStripMenuItem = new ToolStripMenuItem();
+            сплошнойЦветToolStripMenuItem1 = new ToolStripMenuItem();
+            EllipsDrawer = new Button();
+            RectangleDrawer = new Button();
+            LineDrawer = new Button();
+            PenDrawer = new Button();
+            FiguresLabel = new Label();
             panel2 = new Panel();
+            ColorsLabel = new Label();
             panel3 = new Panel();
             MainColorPanel = new Panel();
             MainColorButton = new PictureBox();
@@ -69,8 +86,13 @@
             button3 = new Button();
             button2 = new Button();
             толщинаToolStripMenuItem = new ToolStripMenuItem();
+            colorDialog1 = new ColorDialog();
             ((System.ComponentModel.ISupportInitialize)Sheet).BeginInit();
             ControlPanel.SuspendLayout();
+            panel5.SuspendLayout();
+            panel4.SuspendLayout();
+            panel6.SuspendLayout();
+            menuStrip2.SuspendLayout();
             panel2.SuspendLayout();
             panel3.SuspendLayout();
             MainColorPanel.SuspendLayout();
@@ -87,22 +109,176 @@
             Sheet.Dock = DockStyle.Fill;
             Sheet.Location = new Point(0, 0);
             Sheet.Name = "Sheet";
-            Sheet.Size = new Size(925, 450);
+            Sheet.Size = new Size(1248, 605);
             Sheet.TabIndex = 0;
             Sheet.TabStop = false;
+            Sheet.Paint += Sheet_Paint;
             // 
             // ControlPanel
             // 
             ControlPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ControlPanel.Controls.Add(panel5);
+            ControlPanel.Controls.Add(panel4);
             ControlPanel.Controls.Add(panel2);
             ControlPanel.Location = new Point(0, 0);
             ControlPanel.Name = "ControlPanel";
-            ControlPanel.Size = new Size(924, 110);
+            ControlPanel.Size = new Size(1247, 110);
             ControlPanel.TabIndex = 1;
+            // 
+            // panel5
+            // 
+            panel5.Controls.Add(label3);
+            panel5.Dock = DockStyle.Left;
+            panel5.Location = new Point(0, 0);
+            panel5.Name = "panel5";
+            panel5.Size = new Size(150, 110);
+            panel5.TabIndex = 3;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            label3.Location = new Point(23, 89);
+            label3.Name = "label3";
+            label3.Size = new Size(108, 21);
+            label3.TabIndex = 24;
+            label3.Text = "Инструменты";
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(panel6);
+            panel4.Controls.Add(EllipsDrawer);
+            panel4.Controls.Add(RectangleDrawer);
+            panel4.Controls.Add(LineDrawer);
+            panel4.Controls.Add(PenDrawer);
+            panel4.Controls.Add(FiguresLabel);
+            panel4.Dock = DockStyle.Right;
+            panel4.Location = new Point(388, 0);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(269, 110);
+            panel4.TabIndex = 2;
+            // 
+            // panel6
+            // 
+            panel6.Controls.Add(menuStrip2);
+            panel6.Dock = DockStyle.Right;
+            panel6.Location = new Point(164, 0);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(105, 110);
+            panel6.TabIndex = 27;
+            // 
+            // menuStrip2
+            // 
+            menuStrip2.AutoSize = false;
+            menuStrip2.Dock = DockStyle.Bottom;
+            menuStrip2.ImageScalingSize = new Size(24, 24);
+            menuStrip2.Items.AddRange(new ToolStripItem[] { контурToolStripMenuItem, заливкаToolStripMenuItem1 });
+            menuStrip2.LayoutStyle = ToolStripLayoutStyle.VerticalStackWithOverflow;
+            menuStrip2.Location = new Point(0, 0);
+            menuStrip2.Name = "menuStrip2";
+            menuStrip2.Size = new Size(105, 110);
+            menuStrip2.TabIndex = 0;
+            menuStrip2.Text = "menuStrip2";
+            menuStrip2.ItemClicked += menuStrip2_ItemClicked;
+            // 
+            // контурToolStripMenuItem
+            // 
+            контурToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { заливкаToolStripMenuItem, сплошнойЦветToolStripMenuItem });
+            контурToolStripMenuItem.Image = Properties.Resources.PencilContur;
+            контурToolStripMenuItem.Name = "контурToolStripMenuItem";
+            контурToolStripMenuItem.Size = new Size(98, 29);
+            контурToolStripMenuItem.Text = "Контур";
+            // 
+            // заливкаToolStripMenuItem
+            // 
+            заливкаToolStripMenuItem.Image = Properties.Resources.без_заливки;
+            заливкаToolStripMenuItem.Name = "заливкаToolStripMenuItem";
+            заливкаToolStripMenuItem.Size = new Size(242, 34);
+            заливкаToolStripMenuItem.Text = "Без Контура";
+            // 
+            // сплошнойЦветToolStripMenuItem
+            // 
+            сплошнойЦветToolStripMenuItem.Image = Properties.Resources.Сплошной_цвет;
+            сплошнойЦветToolStripMenuItem.Name = "сплошнойЦветToolStripMenuItem";
+            сплошнойЦветToolStripMenuItem.Size = new Size(242, 34);
+            сплошнойЦветToolStripMenuItem.Text = "Сплошной цвет";
+            // 
+            // заливкаToolStripMenuItem1
+            // 
+            заливкаToolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { безЗаливкиToolStripMenuItem, сплошнойЦветToolStripMenuItem1 });
+            заливкаToolStripMenuItem1.Image = Properties.Resources.заливка;
+            заливкаToolStripMenuItem1.Name = "заливкаToolStripMenuItem1";
+            заливкаToolStripMenuItem1.Size = new Size(98, 29);
+            заливкаToolStripMenuItem1.Text = "Заливка";
+            // 
+            // безЗаливкиToolStripMenuItem
+            // 
+            безЗаливкиToolStripMenuItem.Image = Properties.Resources.без_заливки;
+            безЗаливкиToolStripMenuItem.Name = "безЗаливкиToolStripMenuItem";
+            безЗаливкиToolStripMenuItem.Size = new Size(249, 34);
+            безЗаливкиToolStripMenuItem.Text = "Без Заливки";
+            // 
+            // сплошнойЦветToolStripMenuItem1
+            // 
+            сплошнойЦветToolStripMenuItem1.Image = Properties.Resources.Сплошной_цвет;
+            сплошнойЦветToolStripMenuItem1.Name = "сплошнойЦветToolStripMenuItem1";
+            сплошнойЦветToolStripMenuItem1.Size = new Size(249, 34);
+            сплошнойЦветToolStripMenuItem1.Text = "Сплошной Цвет ";
+            // 
+            // EllipsDrawer
+            // 
+            EllipsDrawer.Location = new Point(111, 6);
+            EllipsDrawer.Name = "EllipsDrawer";
+            EllipsDrawer.Size = new Size(30, 30);
+            EllipsDrawer.TabIndex = 26;
+            EllipsDrawer.Text = "button22";
+            EllipsDrawer.UseVisualStyleBackColor = true;
+            EllipsDrawer.Click += ChooseDrawingMethod;
+            // 
+            // RectangleDrawer
+            // 
+            RectangleDrawer.Location = new Point(75, 6);
+            RectangleDrawer.Name = "RectangleDrawer";
+            RectangleDrawer.Size = new Size(30, 30);
+            RectangleDrawer.TabIndex = 25;
+            RectangleDrawer.Text = "button22";
+            RectangleDrawer.UseVisualStyleBackColor = true;
+            RectangleDrawer.Click += ChooseDrawingMethod;
+            // 
+            // LineDrawer
+            // 
+            LineDrawer.Location = new Point(39, 6);
+            LineDrawer.Name = "LineDrawer";
+            LineDrawer.Size = new Size(30, 30);
+            LineDrawer.TabIndex = 24;
+            LineDrawer.Text = "button21";
+            LineDrawer.UseVisualStyleBackColor = true;
+            LineDrawer.Click += ChooseDrawingMethod;
+            // 
+            // PenDrawer
+            // 
+            PenDrawer.Location = new Point(3, 6);
+            PenDrawer.Name = "PenDrawer";
+            PenDrawer.Size = new Size(30, 30);
+            PenDrawer.TabIndex = 23;
+            PenDrawer.Text = "button20";
+            PenDrawer.UseVisualStyleBackColor = true;
+            PenDrawer.Click += ChooseDrawingMethod;
+            // 
+            // FiguresLabel
+            // 
+            FiguresLabel.AutoSize = true;
+            FiguresLabel.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            FiguresLabel.Location = new Point(93, 89);
+            FiguresLabel.Name = "FiguresLabel";
+            FiguresLabel.Size = new Size(65, 21);
+            FiguresLabel.TabIndex = 22;
+            FiguresLabel.Text = "Фигуры";
             // 
             // panel2
             // 
             panel2.BackColor = SystemColors.Control;
+            panel2.Controls.Add(ColorsLabel);
             panel2.Controls.Add(panel3);
             panel2.Controls.Add(panel1);
             panel2.Controls.Add(button19);
@@ -125,10 +301,20 @@
             panel2.Controls.Add(button3);
             panel2.Controls.Add(button2);
             panel2.Dock = DockStyle.Right;
-            panel2.Location = new Point(334, 0);
+            panel2.Location = new Point(657, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(590, 110);
             panel2.TabIndex = 1;
+            // 
+            // ColorsLabel
+            // 
+            ColorsLabel.AutoSize = true;
+            ColorsLabel.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            ColorsLabel.Location = new Point(348, 89);
+            ColorsLabel.Name = "ColorsLabel";
+            ColorsLabel.Size = new Size(53, 21);
+            ColorsLabel.TabIndex = 21;
+            ColorsLabel.Text = "Цвета";
             // 
             // panel3
             // 
@@ -183,7 +369,6 @@
             AddictionalColorPanel.Size = new Size(56, 93);
             AddictionalColorPanel.TabIndex = 22;
             AddictionalColorPanel.Click += ChooseColor;
-            AddictionalColorPanel.Paint += panel3_Paint;
             // 
             // AddictionalColorButton
             // 
@@ -213,7 +398,7 @@
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(99, 110);
+            panel1.Size = new Size(102, 110);
             panel1.TabIndex = 20;
             // 
             // menuStrip1
@@ -224,7 +409,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { толщинаToolStripMenuItem1, toolStripMenuItem5, toolStripMenuItem6, toolStripMenuItem7, toolStripMenuItem8 });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(99, 96);
+            menuStrip1.Size = new Size(102, 96);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -523,6 +708,7 @@
             // 
             // толщинаToolStripMenuItem
             // 
+            толщинаToolStripMenuItem.DropDownDirection = ToolStripDropDownDirection.BelowRight;
             толщинаToolStripMenuItem.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
             толщинаToolStripMenuItem.Image = Properties.Resources.line_width1;
             толщинаToolStripMenuItem.Name = "толщинаToolStripMenuItem";
@@ -535,7 +721,7 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(925, 450);
+            ClientSize = new Size(1248, 605);
             Controls.Add(ControlPanel);
             Controls.Add(Sheet);
             MainMenuStrip = menuStrip1;
@@ -543,7 +729,15 @@
             Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)Sheet).EndInit();
             ControlPanel.ResumeLayout(false);
+            panel5.ResumeLayout(false);
+            panel5.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
+            panel6.ResumeLayout(false);
+            menuStrip2.ResumeLayout(false);
+            menuStrip2.PerformLayout();
             panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             panel3.ResumeLayout(false);
             MainColorPanel.ResumeLayout(false);
             MainColorPanel.PerformLayout();
@@ -600,5 +794,23 @@
         private Panel panel3;
         private PictureBox MainColorButton;
         private PictureBox AddictionalColorButton;
+        private Panel panel4;
+        private Button PenDrawer;
+        private Label FiguresLabel;
+        private Label ColorsLabel;
+        private Panel panel5;
+        private Label label3;
+        private Button RectangleDrawer;
+        private Button LineDrawer;
+        private ColorDialog colorDialog1;
+        private Button EllipsDrawer;
+        private Panel panel6;
+        private MenuStrip menuStrip2;
+        private ToolStripMenuItem контурToolStripMenuItem;
+        private ToolStripMenuItem заливкаToolStripMenuItem1;
+        private ToolStripMenuItem безЗаливкиToolStripMenuItem;
+        private ToolStripMenuItem сплошнойЦветToolStripMenuItem1;
+        private ToolStripMenuItem заливкаToolStripMenuItem;
+        private ToolStripMenuItem сплошнойЦветToolStripMenuItem;
     }
 }
