@@ -30,21 +30,30 @@
         {
             Sheet = new PictureBox();
             ControlPanel = new Panel();
+            panel7 = new Panel();
+            label4 = new Label();
+            PenDrawer = new Button();
             panel5 = new Panel();
             label3 = new Label();
             panel4 = new Panel();
+            button26 = new Button();
+            button25 = new Button();
+            hexagonDrawer = new Button();
+            rhombusDrawer = new Button();
+            pentaGon = new Button();
+            rightTriangleDrawer = new Button();
+            isoscelesTriangleDrawer = new Button();
             panel6 = new Panel();
             menuStrip2 = new MenuStrip();
             контурToolStripMenuItem = new ToolStripMenuItem();
-            заливкаToolStripMenuItem = new ToolStripMenuItem();
-            сплошнойЦветToolStripMenuItem = new ToolStripMenuItem();
+            NOcontour = new ToolStripMenuItem();
+            SolidColorContour = new ToolStripMenuItem();
             заливкаToolStripMenuItem1 = new ToolStripMenuItem();
-            безЗаливкиToolStripMenuItem = new ToolStripMenuItem();
-            сплошнойЦветToolStripMenuItem1 = new ToolStripMenuItem();
+            NoFilling = new ToolStripMenuItem();
+            SolidColorFilling = new ToolStripMenuItem();
             EllipsDrawer = new Button();
             RectangleDrawer = new Button();
             LineDrawer = new Button();
-            PenDrawer = new Button();
             FiguresLabel = new Label();
             panel2 = new Panel();
             ColorsLabel = new Label();
@@ -89,6 +98,7 @@
             colorDialog1 = new ColorDialog();
             ((System.ComponentModel.ISupportInitialize)Sheet).BeginInit();
             ControlPanel.SuspendLayout();
+            panel7.SuspendLayout();
             panel5.SuspendLayout();
             panel4.SuspendLayout();
             panel6.SuspendLayout();
@@ -109,7 +119,7 @@
             Sheet.Dock = DockStyle.Fill;
             Sheet.Location = new Point(0, 0);
             Sheet.Name = "Sheet";
-            Sheet.Size = new Size(1248, 605);
+            Sheet.Size = new Size(1293, 605);
             Sheet.TabIndex = 0;
             Sheet.TabStop = false;
             Sheet.Paint += Sheet_Paint;
@@ -117,13 +127,43 @@
             // ControlPanel
             // 
             ControlPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            ControlPanel.Controls.Add(panel7);
             ControlPanel.Controls.Add(panel5);
             ControlPanel.Controls.Add(panel4);
             ControlPanel.Controls.Add(panel2);
             ControlPanel.Location = new Point(0, 0);
             ControlPanel.Name = "ControlPanel";
-            ControlPanel.Size = new Size(1247, 110);
+            ControlPanel.Size = new Size(1292, 110);
             ControlPanel.TabIndex = 1;
+            // 
+            // panel7
+            // 
+            panel7.Controls.Add(label4);
+            panel7.Controls.Add(PenDrawer);
+            panel7.Location = new Point(329, 6);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(56, 93);
+            panel7.TabIndex = 24;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            label4.Location = new Point(4, 71);
+            label4.Name = "label4";
+            label4.Size = new Size(44, 19);
+            label4.TabIndex = 22;
+            label4.Text = "Кисть";
+            // 
+            // PenDrawer
+            // 
+            PenDrawer.Location = new Point(4, 3);
+            PenDrawer.Name = "PenDrawer";
+            PenDrawer.Size = new Size(48, 48);
+            PenDrawer.TabIndex = 23;
+            PenDrawer.Text = "button20";
+            PenDrawer.UseVisualStyleBackColor = true;
+            PenDrawer.Click += ChooseDrawingMethod;
             // 
             // panel5
             // 
@@ -146,23 +186,99 @@
             // 
             // panel4
             // 
+            panel4.Controls.Add(button26);
+            panel4.Controls.Add(button25);
+            panel4.Controls.Add(hexagonDrawer);
+            panel4.Controls.Add(rhombusDrawer);
+            panel4.Controls.Add(pentaGon);
+            panel4.Controls.Add(rightTriangleDrawer);
+            panel4.Controls.Add(isoscelesTriangleDrawer);
             panel4.Controls.Add(panel6);
             panel4.Controls.Add(EllipsDrawer);
             panel4.Controls.Add(RectangleDrawer);
             panel4.Controls.Add(LineDrawer);
-            panel4.Controls.Add(PenDrawer);
             panel4.Controls.Add(FiguresLabel);
             panel4.Dock = DockStyle.Right;
-            panel4.Location = new Point(388, 0);
+            panel4.Location = new Point(418, 0);
             panel4.Name = "panel4";
-            panel4.Size = new Size(269, 110);
+            panel4.Size = new Size(284, 110);
             panel4.TabIndex = 2;
+            // 
+            // button26
+            // 
+            button26.Location = new Point(147, 39);
+            button26.Name = "button26";
+            button26.Size = new Size(30, 30);
+            button26.TabIndex = 34;
+            button26.Text = "button22";
+            button26.UseVisualStyleBackColor = true;
+            button26.Click += ChooseDrawingMethod;
+            // 
+            // button25
+            // 
+            button25.Location = new Point(147, 6);
+            button25.Name = "button25";
+            button25.Size = new Size(30, 30);
+            button25.TabIndex = 33;
+            button25.Text = "button22";
+            button25.UseVisualStyleBackColor = true;
+            button25.Click += ChooseDrawingMethod;
+            // 
+            // hexagonDrawer
+            // 
+            hexagonDrawer.Location = new Point(111, 39);
+            hexagonDrawer.Name = "hexagonDrawer";
+            hexagonDrawer.Size = new Size(30, 30);
+            hexagonDrawer.TabIndex = 32;
+            hexagonDrawer.Text = "button22";
+            hexagonDrawer.UseVisualStyleBackColor = true;
+            hexagonDrawer.Click += ChooseDrawingMethod;
+            // 
+            // rhombusDrawer
+            // 
+            rhombusDrawer.Location = new Point(111, 6);
+            rhombusDrawer.Name = "rhombusDrawer";
+            rhombusDrawer.Size = new Size(30, 30);
+            rhombusDrawer.TabIndex = 31;
+            rhombusDrawer.Text = "button22";
+            rhombusDrawer.UseVisualStyleBackColor = true;
+            rhombusDrawer.Click += ChooseDrawingMethod;
+            // 
+            // pentaGon
+            // 
+            pentaGon.Location = new Point(75, 39);
+            pentaGon.Name = "pentaGon";
+            pentaGon.Size = new Size(30, 30);
+            pentaGon.TabIndex = 30;
+            pentaGon.Text = "button22";
+            pentaGon.UseVisualStyleBackColor = true;
+            pentaGon.Click += ChooseDrawingMethod;
+            // 
+            // rightTriangleDrawer
+            // 
+            rightTriangleDrawer.Location = new Point(39, 39);
+            rightTriangleDrawer.Name = "rightTriangleDrawer";
+            rightTriangleDrawer.Size = new Size(30, 30);
+            rightTriangleDrawer.TabIndex = 29;
+            rightTriangleDrawer.Text = "button22";
+            rightTriangleDrawer.UseVisualStyleBackColor = true;
+            rightTriangleDrawer.Click += ChooseDrawingMethod;
+            // 
+            // isoscelesTriangleDrawer
+            // 
+            isoscelesTriangleDrawer.Location = new Point(3, 39);
+            isoscelesTriangleDrawer.Name = "isoscelesTriangleDrawer";
+            isoscelesTriangleDrawer.Size = new Size(30, 30);
+            isoscelesTriangleDrawer.TabIndex = 28;
+            isoscelesTriangleDrawer.Text = "button21";
+            isoscelesTriangleDrawer.UseVisualStyleBackColor = true;
+            isoscelesTriangleDrawer.Click += ChooseDrawingMethod;
             // 
             // panel6
             // 
             panel6.Controls.Add(menuStrip2);
             panel6.Dock = DockStyle.Right;
-            panel6.Location = new Point(164, 0);
+            panel6.Location = new Point(179, 0);
             panel6.Name = "panel6";
             panel6.Size = new Size(105, 110);
             panel6.TabIndex = 27;
@@ -179,55 +295,60 @@
             menuStrip2.Size = new Size(105, 110);
             menuStrip2.TabIndex = 0;
             menuStrip2.Text = "menuStrip2";
-            menuStrip2.ItemClicked += menuStrip2_ItemClicked;
             // 
             // контурToolStripMenuItem
             // 
-            контурToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { заливкаToolStripMenuItem, сплошнойЦветToolStripMenuItem });
+            контурToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { NOcontour, SolidColorContour });
+            контурToolStripMenuItem.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
             контурToolStripMenuItem.Image = Properties.Resources.PencilContur;
             контурToolStripMenuItem.Name = "контурToolStripMenuItem";
-            контурToolStripMenuItem.Size = new Size(98, 29);
+            контурToolStripMenuItem.Size = new Size(98, 28);
             контурToolStripMenuItem.Text = "Контур";
             // 
-            // заливкаToolStripMenuItem
+            // NOcontour
             // 
-            заливкаToolStripMenuItem.Image = Properties.Resources.без_заливки;
-            заливкаToolStripMenuItem.Name = "заливкаToolStripMenuItem";
-            заливкаToolStripMenuItem.Size = new Size(242, 34);
-            заливкаToolStripMenuItem.Text = "Без Контура";
+            NOcontour.Image = Properties.Resources.без_заливки;
+            NOcontour.Name = "NOcontour";
+            NOcontour.Size = new Size(223, 34);
+            NOcontour.Text = "Без Контура";
+            NOcontour.Click += ParamsOfFillingAndContour;
             // 
-            // сплошнойЦветToolStripMenuItem
+            // SolidColorContour
             // 
-            сплошнойЦветToolStripMenuItem.Image = Properties.Resources.Сплошной_цвет;
-            сплошнойЦветToolStripMenuItem.Name = "сплошнойЦветToolStripMenuItem";
-            сплошнойЦветToolStripMenuItem.Size = new Size(242, 34);
-            сплошнойЦветToolStripMenuItem.Text = "Сплошной цвет";
+            SolidColorContour.Image = Properties.Resources.Сплошной_цвет;
+            SolidColorContour.Name = "SolidColorContour";
+            SolidColorContour.Size = new Size(223, 34);
+            SolidColorContour.Text = "Сплошной цвет";
+            SolidColorContour.Click += ParamsOfFillingAndContour;
             // 
             // заливкаToolStripMenuItem1
             // 
-            заливкаToolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { безЗаливкиToolStripMenuItem, сплошнойЦветToolStripMenuItem1 });
+            заливкаToolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { NoFilling, SolidColorFilling });
+            заливкаToolStripMenuItem1.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
             заливкаToolStripMenuItem1.Image = Properties.Resources.заливка;
             заливкаToolStripMenuItem1.Name = "заливкаToolStripMenuItem1";
-            заливкаToolStripMenuItem1.Size = new Size(98, 29);
+            заливкаToolStripMenuItem1.Size = new Size(98, 28);
             заливкаToolStripMenuItem1.Text = "Заливка";
             // 
-            // безЗаливкиToolStripMenuItem
+            // NoFilling
             // 
-            безЗаливкиToolStripMenuItem.Image = Properties.Resources.без_заливки;
-            безЗаливкиToolStripMenuItem.Name = "безЗаливкиToolStripMenuItem";
-            безЗаливкиToolStripMenuItem.Size = new Size(249, 34);
-            безЗаливкиToolStripMenuItem.Text = "Без Заливки";
+            NoFilling.Image = Properties.Resources.без_заливки;
+            NoFilling.Name = "NoFilling";
+            NoFilling.Size = new Size(229, 34);
+            NoFilling.Text = "Без Заливки";
+            NoFilling.Click += ParamsOfFillingAndContour;
             // 
-            // сплошнойЦветToolStripMenuItem1
+            // SolidColorFilling
             // 
-            сплошнойЦветToolStripMenuItem1.Image = Properties.Resources.Сплошной_цвет;
-            сплошнойЦветToolStripMenuItem1.Name = "сплошнойЦветToolStripMenuItem1";
-            сплошнойЦветToolStripMenuItem1.Size = new Size(249, 34);
-            сплошнойЦветToolStripMenuItem1.Text = "Сплошной Цвет ";
+            SolidColorFilling.Image = Properties.Resources.Сплошной_цвет;
+            SolidColorFilling.Name = "SolidColorFilling";
+            SolidColorFilling.Size = new Size(229, 34);
+            SolidColorFilling.Text = "Сплошной Цвет ";
+            SolidColorFilling.Click += ParamsOfFillingAndContour;
             // 
             // EllipsDrawer
             // 
-            EllipsDrawer.Location = new Point(111, 6);
+            EllipsDrawer.Location = new Point(39, 6);
             EllipsDrawer.Name = "EllipsDrawer";
             EllipsDrawer.Size = new Size(30, 30);
             EllipsDrawer.TabIndex = 26;
@@ -247,23 +368,13 @@
             // 
             // LineDrawer
             // 
-            LineDrawer.Location = new Point(39, 6);
+            LineDrawer.Location = new Point(3, 6);
             LineDrawer.Name = "LineDrawer";
             LineDrawer.Size = new Size(30, 30);
             LineDrawer.TabIndex = 24;
             LineDrawer.Text = "button21";
             LineDrawer.UseVisualStyleBackColor = true;
             LineDrawer.Click += ChooseDrawingMethod;
-            // 
-            // PenDrawer
-            // 
-            PenDrawer.Location = new Point(3, 6);
-            PenDrawer.Name = "PenDrawer";
-            PenDrawer.Size = new Size(30, 30);
-            PenDrawer.TabIndex = 23;
-            PenDrawer.Text = "button20";
-            PenDrawer.UseVisualStyleBackColor = true;
-            PenDrawer.Click += ChooseDrawingMethod;
             // 
             // FiguresLabel
             // 
@@ -301,7 +412,7 @@
             panel2.Controls.Add(button3);
             panel2.Controls.Add(button2);
             panel2.Dock = DockStyle.Right;
-            panel2.Location = new Point(657, 0);
+            panel2.Location = new Point(702, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(590, 110);
             panel2.TabIndex = 1;
@@ -328,6 +439,7 @@
             // 
             // MainColorPanel
             // 
+            MainColorPanel.BackColor = Color.SteelBlue;
             MainColorPanel.Controls.Add(MainColorButton);
             MainColorPanel.Controls.Add(label1);
             MainColorPanel.Dock = DockStyle.Left;
@@ -721,14 +833,18 @@
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1248, 605);
+            ClientSize = new Size(1293, 605);
             Controls.Add(ControlPanel);
             Controls.Add(Sheet);
             MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Form1";
+            KeyDown += Form1_KeyDown;
+            KeyUp += Form1_KeyUp;
             ((System.ComponentModel.ISupportInitialize)Sheet).EndInit();
             ControlPanel.ResumeLayout(false);
+            panel7.ResumeLayout(false);
+            panel7.PerformLayout();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
             panel4.ResumeLayout(false);
@@ -808,9 +924,18 @@
         private MenuStrip menuStrip2;
         private ToolStripMenuItem контурToolStripMenuItem;
         private ToolStripMenuItem заливкаToolStripMenuItem1;
-        private ToolStripMenuItem безЗаливкиToolStripMenuItem;
-        private ToolStripMenuItem сплошнойЦветToolStripMenuItem1;
-        private ToolStripMenuItem заливкаToolStripMenuItem;
-        private ToolStripMenuItem сплошнойЦветToolStripMenuItem;
+        private ToolStripMenuItem NoFilling;
+        private ToolStripMenuItem SolidColorFilling;
+        private ToolStripMenuItem NOcontour;
+        private ToolStripMenuItem SolidColorContour;
+        private Panel panel7;
+        private Label label4;
+        private Button button26;
+        private Button button25;
+        private Button hexagonDrawer;
+        private Button rhombusDrawer;
+        private Button pentaGon;
+        private Button rightTriangleDrawer;
+        private Button isoscelesTriangleDrawer;
     }
 }

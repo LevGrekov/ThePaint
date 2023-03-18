@@ -8,18 +8,40 @@ namespace ThePaint
 {
     public static class Palette
     {
-        private static Pen FirstPen = new Pen(Color.Black, 4);
-        private static Pen SecondPen = new Pen(Color.White, 4);
-        private static Pen LastUsedPen = new Pen(Color.Black, 4);
+        public static Pen LastUsedPen = new Pen(Color.Black, 4);
+        public static Brush SolidBrush = new SolidBrush(CurrentAdditionalColor);
 
-        private static Color CurrentMainColor = Color.Black;
-        private static Color CurrentAdditionalColor = Color.White;
-        private static int thickness = 4;
 
-        private enum ColorOption
+        public static Color CurrentMainColor = Color.Black;
+        public static Color CurrentAdditionalColor = Color.White;
+
+        public static int thickness = 4;
+
+        public enum ColorOption
         {
             Main,
-            Addictional
+            Additional
         }
+        public static ColorOption CurrentColor = ColorOption.Main;
+
+        public static void FixCurrentPen(MouseEventArgs e)
+        {
+            //Фиксирование рабочего Карандаша 
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    LastUsedPen = new Pen(CurrentMainColor,thickness);
+                    SolidBrush = new SolidBrush(CurrentAdditionalColor);
+                    break;
+                case MouseButtons.Right:
+                    LastUsedPen = new Pen(CurrentAdditionalColor, thickness);
+                    SolidBrush = new SolidBrush(CurrentMainColor);
+                    break;
+            }
+            LastUsedPen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+            LastUsedPen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+        }
+
+
     }
 }
