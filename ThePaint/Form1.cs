@@ -1,8 +1,10 @@
+using Microsoft.VisualBasic.Devices;
 using System.Diagnostics;
 using System.Drawing;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace ThePaint
 {
@@ -20,7 +22,7 @@ namespace ThePaint
 
         }
         private bool pressed = false;
-        private bool isShiftPressed = false;
+        private bool isShiftPressed;
         private void SetSize()
         {
             Rectangle rectangle = Screen.PrimaryScreen.Bounds;
@@ -36,13 +38,17 @@ namespace ThePaint
 
             Palette.FixCurrentPen(e);
             Drawer.startPoint = e.Location;
+            if (Drawer.CurrentFigure == Drawer.Figures.FillingInstrument)
+            {
+                Drawer.FillingInstrument(bitmap);
+            }
         }
         private void Sheet_MouseUp(object sender, MouseEventArgs e)
         {
             Drawer.endPoint = e.Location;
             if (Drawer.CurrentFigure != Drawer.Figures.Pen)
             {
-                Drawer.DrawFigure(g);
+                Drawer.DrawFigure(g, isShiftPressed);
             }
             Drawer.arrayPoints.ResetPoints();
 
@@ -50,7 +56,7 @@ namespace ThePaint
         }
         private void Sheet_MouseMove(object sender, MouseEventArgs e)
         {
-
+            ;
             if (!pressed) return;//Проверка на "нажатость".
 
             if (Drawer.CurrentFigure == Drawer.Figures.Pen)
@@ -65,7 +71,7 @@ namespace ThePaint
         private void Sheet_Paint(object sender, PaintEventArgs e)
         {
             if (!pressed) return;
-            Drawer.DrawFigure(e.Graphics);
+            Drawer.DrawFigure(e.Graphics, isShiftPressed);
         }
 
 
@@ -140,6 +146,7 @@ namespace ThePaint
             if (sender.Equals(rhombusDrawer)) Drawer.CurrentFigure = Drawer.Figures.rhombus;
             if (sender.Equals(pentaGon)) Drawer.CurrentFigure = Drawer.Figures.pentagon;
             if (sender.Equals(hexagonDrawer)) Drawer.CurrentFigure = Drawer.Figures.hexagon;
+            if (sender.Equals(FillingInstrument)) Drawer.CurrentFigure = Drawer.Figures.FillingInstrument;
 
         }
 
@@ -157,7 +164,9 @@ namespace ThePaint
             if (e.KeyCode == Keys.ShiftKey)
             {
                 isShiftPressed = true;
+                e.Handled = true;
             }
+
         }
 
         private void Form1_KeyUp(object sender, KeyEventArgs e)
@@ -165,6 +174,7 @@ namespace ThePaint
             if (e.KeyCode == Keys.ShiftKey)
             {
                 isShiftPressed = false;
+                e.Handled = true;
             }
         }
     }

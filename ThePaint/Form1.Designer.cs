@@ -96,6 +96,7 @@
             button2 = new Button();
             толщинаToolStripMenuItem = new ToolStripMenuItem();
             colorDialog1 = new ColorDialog();
+            FillingInstrument = new Button();
             ((System.ComponentModel.ISupportInitialize)Sheet).BeginInit();
             ControlPanel.SuspendLayout();
             panel7.SuspendLayout();
@@ -122,6 +123,7 @@
             Sheet.Size = new Size(1293, 605);
             Sheet.TabIndex = 0;
             Sheet.TabStop = false;
+            Sheet.Click += ChooseDrawingMethod;
             Sheet.Paint += Sheet_Paint;
             // 
             // ControlPanel
@@ -167,6 +169,7 @@
             // 
             // panel5
             // 
+            panel5.Controls.Add(FillingInstrument);
             panel5.Controls.Add(label3);
             panel5.Dock = DockStyle.Left;
             panel5.Location = new Point(0, 0);
@@ -829,6 +832,16 @@
             толщинаToolStripMenuItem.Text = "Толщина";
             толщинаToolStripMenuItem.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
+            // FillingInstrument
+            // 
+            FillingInstrument.Image = Properties.Resources.заливка;
+            FillingInstrument.Location = new Point(3, 3);
+            FillingInstrument.Name = "FillingInstrument";
+            FillingInstrument.Size = new Size(36, 36);
+            FillingInstrument.TabIndex = 35;
+            FillingInstrument.UseVisualStyleBackColor = true;
+            FillingInstrument.Click += ChooseDrawingMethod;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -836,6 +849,7 @@
             ClientSize = new Size(1293, 605);
             Controls.Add(ControlPanel);
             Controls.Add(Sheet);
+            KeyPreview = true;
             MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "Form1";
@@ -937,5 +951,6 @@
         private Button pentaGon;
         private Button rightTriangleDrawer;
         private Button isoscelesTriangleDrawer;
+        private Button FillingInstrument;
     }
 }

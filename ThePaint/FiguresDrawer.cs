@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 
 namespace ThePaint
 {
@@ -88,6 +82,7 @@ namespace ThePaint
         public enum Figures
         {
             Pen,
+            FillingInstrument,
 
             Line,
             Rectangle,
@@ -116,6 +111,7 @@ namespace ThePaint
         {
             int x1 = Math.Min(startPoint.X, endPoint.X);
             int y1 = Math.Min(startPoint.Y, endPoint.Y);
+
             int x2 = Math.Max(startPoint.X, endPoint.X);
             int y2 = Math.Max(startPoint.Y, endPoint.Y);
 
@@ -125,181 +121,254 @@ namespace ThePaint
             return new Rectangle(x1, y1, width, height);
         }
 
+        private static Rectangle CountSquare()
+        {
+
+            int deltaX = endPoint.X - startPoint.X;
+            int deltaY = endPoint.Y - startPoint.Y;
+
+            int absDeltaX = Math.Abs(deltaX);
+            int absDeltaY = Math.Abs(deltaY);
+            int endPointX = endPoint.X;
+            int endPointY = endPoint.Y;
+
+            if (absDeltaX > absDeltaY)
+            {
+                endPointY = startPoint.Y + Math.Sign(deltaY) * absDeltaX;
+            }
+            else
+            {
+                endPointX = startPoint.X + Math.Sign(deltaX) * absDeltaY;
+            }
+
+
+            int x1 = Math.Min(startPoint.X, endPointX);
+            int y1 = Math.Min(startPoint.Y, endPointY);
+
+            int x2 = Math.Max(startPoint.X, endPointX);
+            int y2 = Math.Max(startPoint.Y, endPointY);
+
+            int width = x2 - x1;
+            int height = y2 - y1;
+
+
+            return new Rectangle(x1, y1, width, width);
+        }
 
 
         public static void DrawFigure(Graphics g, bool shift)
         {
+            
+
             if (CurrentFigure == Figures.Pen) return;
 
             Pen currentPen = Palette.LastUsedPen;
             Brush currentBrush = Palette.SolidBrush;
             Point[] points;
-            var rect = CountRectangle();
+            Rectangle rect;
+            double angle;
 
-            //Если заливка выбрана
+            switch (shift)
+            {
+                case false:
+                    {
+                        rect = CountRectangle();
+                    }
+                    break;
+                case true:
+                    {
+                        rect = CountSquare();
+                    }
+                    break;
+            }
+            switch (filling)
+            {
+                case fillingOption.SolidColor:
+                    currentBrush = Palette.SolidBrush;
+                    break;
+                case fillingOption.NO:
+                    currentBrush = null;
+                    break;
+            }
+
+            //Выбор Фигуры
+            switch (CurrentFigure)
+            {
+                case Figures.Line:
+                    if (contour != fillingOption.NO)
+                    {
+                        if (shift)
+                        {
+                            int deltaX = endPoint.X - startPoint.X;
+                            int deltaY = endPoint.Y - startPoint.Y;
+                            int endPointX;
+                            int endPointY;
+
+                            // Вычисляем значение угла между прямой и осью X в радианах
+                            angle = Math.Atan2(deltaY, deltaX);
+
+                            // Округляем угол до ближайшего значения, кратного 45 градусам
+                            angle = Math.Round(angle / (Math.PI / 4)) * (Math.PI / 4);
+
+                            // Вычисляем новые координаты endPoint на основе угла и расстояния между точками
+                            double distance = Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+                            endPointX = startPoint.X + (int)Math.Round(distance * Math.Cos(angle));
+                            endPointY = startPoint.Y + (int)Math.Round(distance * Math.Sin(angle));
+                            g.DrawLine(currentPen, startPoint, new Point(endPointX, endPointY));
+                        }
+                        if (!shift)
+                        {
+                            g.DrawLine(currentPen, startPoint, endPoint);
+                        }
+                    }
+                    break;
+
+
+
+                case Figures.Rectangle:
+                    if (filling != fillingOption.NO)
+                    {
+                        g.FillRectangle(currentBrush, rect);
+                    }
+                    if (contour != fillingOption.NO)
+                    {
+                        g.DrawRectangle(currentPen, rect);
+                    }
+                    break;
+
+
+
+                case Figures.Ellipse:
+                    if (filling != fillingOption.NO)
+                    {
+                        g.FillEllipse(currentBrush, rect);
+                    }
+                    if (contour != fillingOption.NO)
+                    {
+                        g.DrawEllipse(currentPen, rect);
+                    }
+                    break;
+
+
+
+                case Figures.isoscelesTriangle:
+
+                    points = new Point[3];
+                    points[0] = new Point(rect.X + rect.Width / 2, rect.Y); // верхняя точка
+                    points[1] = new Point(rect.X, rect.Y + rect.Height); // левая точка
+                    points[2] = new Point(rect.X + rect.Width, rect.Y + rect.Height);
+
+                    DrawPolygon(g, points);
+                    break;
+
+
+
+                case Figures.rectangularthTriangle:
+                    points = new Point[3];
+                    points[0] = new Point(rect.X, rect.Y); // верхняя левая точка
+                    points[1] = new Point(rect.X, rect.Y + rect.Height); // нижняя левая точка
+                    points[2] = new Point(rect.X + rect.Width, rect.Y + rect.Height);
+                    DrawPolygon(g, points);
+                    break;
+
+
+
+                case Figures.rhombus:
+                    points = new Point[4];
+                    points[0] = new Point(rect.X + rect.Width / 2, rect.Y); // верхняя точка
+                    points[1] = new Point(rect.X, rect.Y + rect.Height / 2); // левая точка
+                    points[2] = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height); // нижняя точка
+                    points[3] = new Point(rect.X + rect.Width, rect.Y + rect.Height / 2); // правая точка
+
+                    DrawPolygon(g, points);
+                    break;
+
+                    int cx;
+                    int cy;
+                    int r;
+
+                case Figures.pentagon:
+                    points = new Point[5];
+
+                    double goldenRatio = (1 + Math.Sqrt(5)) / 2;
+
+                    points[0] = new Point(rect.Left + rect.Width/2, rect.Top);
+                    points[1] = new Point(rect.Right, rect.Top + rect.Height/(3*(int)goldenRatio));
+                    points[2] = new Point(rect.Left + rect.Width/4 * 3 , rect.Bottom);
+                    points[3] = new Point(rect.Left + rect.Width/4, rect.Bottom);
+                    points[4] = new Point(rect.Left, rect.Top + rect.Height/(3 *(int)goldenRatio) );
+
+                    DrawPolygon(g, points);
+                    break;
+
+
+
+                case Figures.hexagon:
+                    points = new Point[6];
+
+                    points[0] = new Point(rect.Left + rect.Width / 2, rect.Top);
+                    points[1] = new Point(rect.Right, rect.Top + rect.Height/4);
+                    points[2] = new Point(rect.Right, rect.Top + (rect.Height / 4) * 3);
+                    points[3] = new Point(rect.Left + rect.Width / 2, rect.Bottom);
+                    points[5] = new Point(rect.Left, rect.Top + rect.Height / 4);
+                    points[4] = new Point(rect.Left, rect.Top + (rect.Height / 4) * 3);
+                    DrawPolygon(g, points);
+                    break;
+                default: break;
+            }
+        }
+        private static void DrawPolygon(Graphics g, Point[] points)
+        {
             if (filling != fillingOption.NO)
             {
-                //Выбор способа заливки
-                switch (filling)
-                {
-                    case fillingOption.SolidColor:
-                        currentBrush = Palette.SolidBrush;
-                        break;
-                }
-
-                //Выбор Фигуры
-                switch (CurrentFigure)
-                {
-                    case Figures.Rectangle:
-                        g.FillRectangle(currentBrush, rect);
-                        break;
-                    case Figures.Ellipse:
-                        g.FillEllipse(currentBrush, rect);
-                        break;
-                    case Figures.isoscelesTriangle:
-                        points = new Point[3];
-                        points[0] = new Point(rect.X + rect.Width / 2, rect.Y); // верхняя точка
-                        points[1] = new Point(rect.X, rect.Y + rect.Height); // левая точка
-                        points[2] = new Point(rect.X + rect.Width, rect.Y + rect.Height);
-                        g.FillPolygon(currentBrush, points);
-                        break;
-                    case Figures.rectangularthTriangle:
-                        points = new Point[3];
-                        points[0] = new Point(rect.X, rect.Y); // верхняя левая точка
-                        points[1] = new Point(rect.X, rect.Y + rect.Height); // нижняя левая точка
-                        points[2] = new Point(rect.X + rect.Width, rect.Y + rect.Height);
-                        g.FillPolygon(currentBrush, points);
-                        break;
-                    case Figures.rhombus:
-                        points = new Point[4];
-                        points[0] = new Point(rect.X + rect.Width / 2, rect.Y); // верхняя точка
-                        points[1] = new Point(rect.X, rect.Y + rect.Height / 2); // левая точка
-                        points[2] = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height); // нижняя точка
-                        points[3] = new Point(rect.X + rect.Width, rect.Y + rect.Height / 2); // правая точка
-                        g.FillPolygon(currentBrush, points);
-                        break;
-
-                        int cx;
-                        int cy;
-                        int r;
-
-                    case Figures.pentagon:
-                        // Вычисляем координаты центра прямоугольника
-                        int centerX = rect.X + rect.Width / 2;
-                        int centerY = rect.Y + rect.Height / 2;
-
-                        // Вычисляем радиус вписанной окружности
-                        int radius = Math.Min(rect.Width, rect.Height) / 2;
-
-                        // Вычисляем координаты вершин пятиугольника
-                        points = new Point[5];
-                        for (int i = 0; i < 5; i++)
-                        {
-                            double angle = 72 * i - 90;
-                            double x = centerX + radius * Math.Cos(angle * Math.PI / 180);
-                            double y = centerY + radius * Math.Sin(angle * Math.PI / 180);
-
-                            points[i] = new Point((int)x, (int)y);
-                        }
-                        g.FillPolygon(currentBrush, points);
-                        break;
-                    case Figures.hexagon:
-                        points = new Point[6];
-                        cx = rect.X + rect.Width / 2; // координаты центра окружности
-                        cy = rect.Y + rect.Height / 2;
-                        r = Math.Min(rect.Width, rect.Height) / 2; // радиус окружности
-
-                        for (int i = 0; i < 6; i++)
-                        {
-                            double angle = Math.PI / 6 + 2 * Math.PI * i / 6; // угол между вершинами
-                            int x = (int)(cx + r * Math.Cos(angle)); // координаты вершины
-                            int y = (int)(cy + r * Math.Sin(angle));
-                            points[i] = new Point(x, y);
-                        }
-                        g.FillPolygon(currentBrush, points);
-                        break;
-
-                }
+                g.FillPolygon(Palette.SolidBrush, points);
             }
-            //Если выбран контур 
             if (contour != fillingOption.NO)
             {
-                switch (CurrentFigure)
+                g.DrawPolygon(Palette.LastUsedPen, points);
+            }
+        }
+
+        public static void FillingInstrument(Bitmap bmp)
+        {
+            Color theColor = bmp.GetPixel(startPoint.X, startPoint.Y);
+
+            Stack<Point> stack = new Stack<Point>();
+            stack.Push(startPoint);
+            var temp = startPoint;
+
+            while(stack.Count > 0 )
+            {
+                if (stack.Count > 0)
                 {
-                    case Figures.Line:
-                        g.DrawLine(currentPen, startPoint, endPoint);
-                        break;
-                    case Figures.Rectangle:
-                        g.DrawRectangle(currentPen, rect);
-                        break;
-                    case Figures.Ellipse:
-                        g.DrawEllipse(currentPen, rect);
-                        break;
-                    case Figures.isoscelesTriangle:
-                        points = new Point[3];
-                        points[0] = new Point(rect.X + rect.Width / 2, rect.Y); // верхняя точка
-                        points[1] = new Point(rect.X, rect.Y + rect.Height); // левая точка
-                        points[2] = new Point(rect.X + rect.Width, rect.Y + rect.Height);
-                        g.DrawPolygon(Palette.LastUsedPen, points);
-                        break;
-                    case Figures.rectangularthTriangle:
-                        points = new Point[3];
-                        points[0] = new Point(rect.X, rect.Y); // верхняя левая точка
-                        points[1] = new Point(rect.X, rect.Y + rect.Height); // нижняя левая точка
-                        points[2] = new Point(rect.X + rect.Width, rect.Y + rect.Height);
-                        g.DrawPolygon(currentPen, points);
-                        break;
-                    case Figures.rhombus:
-                        points = new Point[4];
-                        points[0] = new Point(rect.X + rect.Width / 2, rect.Y); // верхняя точка
-                        points[1] = new Point(rect.X, rect.Y + rect.Height / 2); // левая точка
-                        points[2] = new Point(rect.X + rect.Width / 2, rect.Y + rect.Height); // нижняя точка
-                        points[3] = new Point(rect.X + rect.Width, rect.Y + rect.Height / 2); // правая точка
-                        g.DrawPolygon(currentPen, points);
-                        break;
+                    temp = stack.Pop();
+                    bmp.SetPixel(temp.X, temp.Y, Palette.CurrentMainColor);
+                }
 
-                        int cx;
-                        int cy;
-                        int r;
 
-                    case Figures.pentagon:
-                        // Вычисляем координаты центра прямоугольника
-                        int centerX = rect.X + rect.Width / 2;
-                        int centerY = rect.Y + rect.Height / 2;
+                var x1 = new Point(temp.X + 1, temp.Y);
+                var x2 = new Point(temp.X - 1, temp.Y);
+                var x3 = new Point(temp.X, temp.Y + 1);
+                var x4 = new Point(temp.X, temp.Y - 1);
 
-                        // Вычисляем радиус вписанной окружности
-                        int radius = Math.Min(rect.Width, rect.Height) / 2;
-
-                        // Вычисляем координаты вершин пятиугольника
-                        points = new Point[5];
-                        for (int i = 0; i < 5; i++)
-                        {
-                            double angle = 72 * i - 90;
-                            double x = centerX + radius * Math.Cos(angle * Math.PI / 180);
-                            double y = centerY + radius * Math.Sin(angle * Math.PI / 180);
-
-                            points[i] = new Point((int)x, (int)y);
-                        }
-                        g.DrawPolygon(currentPen, points);
-                        break;
-                    case Figures.hexagon:
-                        points = new Point[6];
-                        cx = rect.X + rect.Width / 2; // координаты центра окружности
-                        cy = rect.Y + rect.Height / 2;
-                        r = Math.Min(rect.Width, rect.Height) / 2; // радиус окружности
-
-                        for (int i = 0; i < 6; i++)
-                        {
-                            double angle = Math.PI / 6 + 2 * Math.PI * i / 6; // угол между вершинами
-                            int x = (int)(cx + r * Math.Cos(angle)); // координаты вершины
-                            int y = (int)(cy + r * Math.Sin(angle));
-                            points[i] = new Point(x, y);
-                        }
-                        g.DrawPolygon(currentPen, points);
-                        break;
-
+                if (bmp.GetPixel(x1.X, x1.Y) != theColor)
+                {
+                    stack.Push(x1);
+                }
+                if (bmp.GetPixel(x2.X, x2.Y) != theColor)
+                {
+                    stack.Push(x2);
+                }
+                if (bmp.GetPixel(x3.X, x3.Y) != theColor)
+                {
+                    stack.Push(x3);
+                }
+                if (bmp.GetPixel(x4.X, x4.Y) != theColor)
+                {
+                    stack.Push(x4);
                 }
             }
         }
+
     }
 }
